@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # Run weekly to check for updates
+    - cron: '0 0 * * 0'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['3.0', '3.1', '3.2', '3.3']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: Install Homebrew
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
+
+    - name: Test formula syntax
+      run: |
+        brew audit --strict --online Casks/gitsweeper.rb
+
+    - name: Test formula installation (dry-run)
+      run: |
+        brew install --dry-run Casks/gitsweeper.rb
+
+    - name: Test formula with brew style
+      run: |
+        brew style Casks/gitsweeper.rb
+
+  update-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+
+    - name: Install Homebrew
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
+
+    - name: Check for updates
+      run: |
+        brew livecheck Casks/gitsweeper.rb
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ruby
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3 
