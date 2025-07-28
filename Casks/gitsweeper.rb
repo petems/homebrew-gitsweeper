@@ -13,22 +13,22 @@ cask "gitsweeper" do
   on_macos do
     on_intel do
       url "https://github.com/petems/gitsweeper/releases/download/v0.1.0/gitsweeper-0.1.0-darwin-amd64.tar.gz"
-      sha256 "4eea931becefb42e82d30a94017309dd81ea8049844040399766dcfd81fb738c"
+      sha256 "ae0316e0b4163d905e3cc647c92d3a22b93e63ee6901ea4f2b7a23d2ac89fa75"
     end
     on_arm do
       url "https://github.com/petems/gitsweeper/releases/download/v0.1.0/gitsweeper-0.1.0-darwin-arm64.tar.gz"
-      sha256 "882ff01fa2c8ce3fb7d64e73db64bdb23985e23c3a82bf1ad954060b8884577c"
+      sha256 "980ebc9554c171a516c99677f953777d96626bee40bf15273e0b2cfd98559caf"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/petems/gitsweeper/releases/download/v0.1.0/gitsweeper-0.1.0-linux-amd64.tar.gz"
-      sha256 "ce9e0d6dbfcf733851ef003c89681f3f4f996c773e38ed1574602cb5f2ba3e1e"
+      sha256 "05ea978aceaa20cd3c06e2fba52537002336659ffd0fe2d38535516d31afef45"
     end
     on_arm do
       url "https://github.com/petems/gitsweeper/releases/download/v0.1.0/gitsweeper-0.1.0-linux-arm64.tar.gz"
-      sha256 "e1b384a8f151c6995f1c028e3568522e52bdcba7cfb3eb871b34cd8e3e422c3b"
+      sha256 "f30e7dd27fee446142fdbba365cdf623e17718f16dfb742f49329292346a9cb5"
     end
   end
 
