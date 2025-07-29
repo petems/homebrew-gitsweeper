@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
@@ -19,11 +19,6 @@ jobs:
       with:
         ruby-version: '3.3'
         bundler-cache: true
-
-    - name: Install Homebrew
-      run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
 
     - name: Validate formula syntax
       run: |
@@ -40,7 +35,7 @@ jobs:
     - name: Verify download URLs
       run: |
         # Extract URLs from the formula and verify they're accessible
-        grep -o 'https://github.com/petems/gitsweeper/releases/download/[^"]*' Casks/gitsweeper.rb | while read url; do
+        grep -o 'https://github.com/petems/gitsweeper/releases/download/[^"]*' Casks/gitsweeper.rb | while read -r url; do
           echo "Checking URL: $url"
           curl -I "$url" | head -1
         done
@@ -49,8 +44,10 @@ jobs:
       run: |
         # Extract URLs and SHA256s, then verify
         grep -A 1 'url "https://github.com/petems/gitsweeper/releases/download/' Casks/gitsweeper.rb | while read -r url_line && read -r sha_line; do
-          url=$(echo "$url_line" | sed 's/.*url "\([^"]*\)".*/\1/')
-          expected_sha=$(echo "$sha_line" | sed 's/.*sha256 "\([^"]*\)".*/\1/')
+          url="${url_line#*url \"}"
+          url="${url%\"*}"
+          expected_sha="${sha_line#*sha256 \"}"
+          expected_sha="${expected_sha%\"*}"
           
           echo "Verifying: $url"
           actual_sha=$(curl -sL "$url" | shasum -a 256 | cut -d' ' -f1)
@@ -68,12 +65,14 @@ jobs:
     - name: Create validation report
       if: always()
       run: |
-        echo "## Formula Validation Report" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Formula syntax validation passed" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Formula style check passed" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Installation dry-run passed" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Download URLs are accessible" >> $GITHUB_STEP_SUMMARY
-        echo "✅ SHA256 checksums verified" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "Formula is ready for distribution!" >> $GITHUB_STEP_SUMMARY 
+        {
+          echo "## Formula Validation Report"
+          echo ""
+          echo "✅ Formula syntax validation passed"
+          echo "✅ Formula style check passed"
+          echo "✅ Installation dry-run passed"
+          echo "✅ Download URLs are accessible"
+          echo "✅ SHA256 checksums verified"
+          echo ""
+          echo "Formula is ready for distribution!"
+        } >> "$GITHUB_STEP_SUMMARY" 

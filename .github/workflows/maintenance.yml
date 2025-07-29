@@ -1,4 +1,4 @@
-name: Dependabot
+name: Maintenance Check
 
 on:
   schedule:
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-dependencies:
-    runs-on: ubuntu-latest
+  maintenance:
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
@@ -19,11 +19,6 @@ jobs:
       with:
         ruby-version: '3.3'
         bundler-cache: true
-
-    - name: Install Homebrew
-      run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo "$HOME/.linuxbrew/bin" >> $GITHUB_PATH
 
     - name: Update Homebrew
       run: |
@@ -38,7 +33,7 @@ jobs:
         brew audit --strict --online Casks/gitsweeper.rb
 
   security-scan:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
     - name: Checkout code
