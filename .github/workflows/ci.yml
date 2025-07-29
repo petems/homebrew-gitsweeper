@@ -24,19 +24,22 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true
 
-    - name: Test formula syntax
+    - name: Tap this repository
       run: |
-        brew audit --strict --online Casks/gitsweeper.rb
+        brew tap petems/homebrew-gitsweeper $GITHUB_WORKSPACE
 
-    - name: Test formula installation (dry-run)
+    - name: Test cask syntax
       run: |
-        brew install --dry-run Casks/gitsweeper.rb
+        brew audit --strict --online --cask gitsweeper
 
-    - name: Test formula with brew style
+    - name: Test cask installation (dry-run)
       run: |
-        brew style Casks/gitsweeper.rb
+        brew install --dry-run --cask gitsweeper
+
+    - name: Test cask with brew style
+      run: |
+        brew style --cask gitsweeper
 
   update-check:
     runs-on: macos-latest
@@ -50,11 +53,11 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.3'
-        bundler-cache: true
+
 
     - name: Check for updates
       run: |
-        brew livecheck Casks/gitsweeper.rb
+        brew livecheck --cask gitsweeper
 
   security:
     runs-on: macos-latest
