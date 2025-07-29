@@ -54,6 +54,9 @@ jobs:
       with:
         ruby-version: '3.3'
 
+    - name: Tap this repository
+      run: |
+        brew tap petems/homebrew-gitsweeper $GITHUB_WORKSPACE
 
     - name: Check for updates
       run: |
